@@ -21,7 +21,7 @@ echo ""
 sudo -v
 
 # Keep sudo privilege throughout the script execution
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+(while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null) &
 
 # Update package lists
 echo -e "\n${GREEN}Updating package lists...${NC}"
@@ -109,7 +109,7 @@ yarn create strapi-app ./my-project --quickstart
 
 # Configure environment variables for production
 cd my-project
-cat > .env << EOF
+cat > .env << 'EOF'
 HOST=0.0.0.0
 PORT=1337
 APP_KEYS=$(openssl rand -base64 32),$(openssl rand -base64 32)
@@ -145,7 +145,7 @@ echo -e "\n${GREEN}Installing Nginx as a reverse proxy...${NC}"
 sudo apt-get install -y nginx
 
 # Create Nginx configuration for Strapi
-sudo tee /etc/nginx/sites-available/strapi << EOF
+sudo tee /etc/nginx/sites-available/strapi << 'EOF'
 server {
     listen 80;
     server_name _;
@@ -153,10 +153,10 @@ server {
     location / {
         proxy_pass http://localhost:1337;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_cache_bypass \$http_upgrade;
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
     }
 }
 EOF
